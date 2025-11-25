@@ -18,7 +18,6 @@
 -   **UI Components**: [Radix UI](https://www.radix-ui.com/) (via [shadcn/ui](https://ui.shadcn.com/))
 -   **Icons**: [Lucide React](https://lucide.dev/)
 -   **Diagrams**: [Mermaid.js](https://mermaid.js.org/)
--   **Charts**: [Recharts](https://recharts.org/)
 
 ### Backend
 -   **Runtime**: [Node.js](https://nodejs.org/)
