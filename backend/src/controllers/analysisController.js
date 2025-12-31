@@ -68,17 +68,17 @@ export const analyze = async (req, res, next) => {
                         userId: req.user.userId,
                         inputText: JSON.stringify(srsData), // Serialize as input
                         resultJson: { // Dummy result for schema compliance
-                            projectTitle: srsData.introduction?.projectName?.content || "Draft Project",
+                            projectTitle: srsData.details?.projectName?.content || "Draft Project",
                             introduction: {
-                                projectName: srsData.introduction?.projectName?.content || "",
-                                purpose: srsData.introduction?.content?.content || "",
+                                projectName: srsData.details?.projectName?.content || "",
+                                purpose: srsData.details?.fullDescription?.content || "",
                                 scope: "",
                                 intendedAudience: "",
                                 references: [],
                                 documentConventions: ""
                             },
                             overallDescription: {
-                                productPerspective: srsData.overallDescription?.content?.content || "",
+                                productPerspective: "See Introduction",
                                 productFunctions: [],
                                 userClassesAndCharacteristics: [],
                                 operatingEnvironment: "",
@@ -87,26 +87,21 @@ export const analyze = async (req, res, next) => {
                                 assumptionsAndDependencies: []
                             },
                             externalInterfaceRequirements: {
-                                userInterfaces: srsData.externalInterfaces?.content?.content || "",
+                                userInterfaces: "",
                                 hardwareInterfaces: "",
                                 softwareInterfaces: "",
                                 communicationsInterfaces: ""
                             },
                             // Map remaining sections if needed for rough view, or keep empty for draft
-                            systemFeatures: (srsData.systemFeatures?.features || []).map(f => ({
-                                id: f.id,
-                                name: f.name,
-                                description: f.description?.content || "",
-                                functionalRequirements: f.functionalRequirements?.content ? [f.functionalRequirements.content] : []
-                            })),
+                            systemFeatures: [],
                             nonFunctionalRequirements: {
-                                performanceRequirements: srsData.nonFunctional?.content?.content ? [srsData.nonFunctional.content.content] : [],
+                                performanceRequirements: [],
                                 safetyRequirements: [],
                                 securityRequirements: [],
                                 softwareQualityAttributes: [],
                                 businessRules: []
                             },
-                            otherRequirements: srsData.other?.appendix?.content ? [srsData.other.appendix.content] : [],
+                            otherRequirements: [],
                             status: "DRAFT"
                         },
                         version: 1,
@@ -684,35 +679,16 @@ export const validateAnalysis = async (req, res, next) => {
         const draftData = analysis.metadata?.draftData || {};
         const issues = [];
 
-        // VALIDATION LOGIC (Layer 2)
-        // 1. Introduction
-        if (!draftData.introduction?.content?.content || draftData.introduction.content.content.length < 20) {
-            issues.push({ id: 'intro-1', severity: 'critical', message: 'Introduction content is too short or missing', section: 'Introduction' });
+        // VALIDATION LOGIC (Unified Simplified)
+
+        // 1. Project Name
+        if (!draftData.details?.projectName?.content || draftData.details.projectName.content.length < 3) {
+            issues.push({ id: 'proj-1', severity: 'critical', message: 'Project Name is required', section: 'Project Details' });
         }
 
-        // 2. Features
-        if (!draftData.systemFeatures?.features || draftData.systemFeatures.features.length === 0) {
-            issues.push({ id: 'feat-1', severity: 'warning', message: 'No System Features defined', section: 'Features' });
-        }
-
-        // 3. Overall Description
-        if (!draftData.overallDescription?.content?.content || draftData.overallDescription.content.content.length < 20) {
-            issues.push({ id: 'desc-1', severity: 'critical', message: 'Overall Description is required', section: 'Overall Description' });
-        }
-
-        // 4. External Interfaces
-        if (!draftData.externalInterfaces?.content?.content) {
-            issues.push({ id: 'ext-1', severity: 'critical', message: 'External Interfaces info is required', section: 'External Interfaces' });
-        }
-
-        // 5. Nonfunctional Requirements
-        if (!draftData.nonFunctional?.content?.content) {
-            issues.push({ id: 'nf-1', severity: 'critical', message: 'Nonfunctional requirements are required', section: 'Nonfunctional Requirements' });
-        }
-
-        // 6. Other Requirements
-        if (!draftData.other?.appendix?.content) {
-            issues.push({ id: 'other-1', severity: 'critical', message: 'Appendix info is required', section: 'Other Requirements' });
+        // 2. Full Description
+        if (!draftData.details?.fullDescription?.content || draftData.details.fullDescription.content.length < 50) {
+            issues.push({ id: 'desc-1', severity: 'critical', message: 'A detailed project description is required (min 50 chars).', section: 'Project Details' });
         }
 
         // Determine Status

@@ -13,47 +13,17 @@ export interface IntakeField {
     content: string;
 }
 
-// 1. Introduction
-export interface IntroductionSection {
-    projectName: IntakeField; // 1.1
-    content: IntakeField; // 1.2 (Merged Purpose, Scope, Definitions, References, Overview)
+// Unified Intake Model
+export interface UnifiedIntakeSection {
+    projectName: IntakeField;
+    fullDescription: IntakeField;
 }
 
-// 2. Overall Description
-export interface OverallDescriptionSection {
-    content: IntakeField; // 2.1 (Merged Perspective, Functions, Users, etc.)
+export interface SRSIntakeModel {
+    details: UnifiedIntakeSection;
 }
 
-// 3. External Interface Requirements
-export interface ExternalInterfaceSection {
-    content: IntakeField; // 3.1 (Merged User, Hardware, Software, Communication)
-}
-
-// 4. System Features (Unchanged)
-// This is structurally different as it's a list. 
-// For strict schema, we might model it as an array of structured feature objects.
-export interface SystemFeatureItem {
-    id: string; // Auto-generated UUID
-    name: string;
-    description: IntakeField; // 4.1.1
-    stimulusResponse: IntakeField; // 4.1.2
-    functionalRequirements: IntakeField; // 4.1.3
-    rawInput?: string; // Simplification prompt
-}
-export interface SystemFeaturesSection {
-    features: SystemFeatureItem[];
-}
-
-// 5. Nonfunctional Requirements
-export interface NonFunctionalSection {
-    content: IntakeField; // 5.1 (Merged Performance, Safety, Security, Quality, Business Rules)
-}
-
-// 6. Other Requirements
-export interface OtherSection {
-    appendix: IntakeField;
-}
-
+// Validation Types
 export type ValidationIssueType = 'VAGUE' | 'INCOMPLETE' | 'INCONSISTENT' | 'UNVERIFIABLE' | 'SEMANTIC_MISMATCH' | 'SCOPE_CREEP' | 'AMBIGUITY' | 'OTHER';
 export type ValidationSeverity = 'BLOCKER' | 'WARNING';
 export type ConflictType = 'HARD_CONFLICT' | 'SOFT_DRIFT' | 'NONE';
@@ -72,13 +42,4 @@ export interface ValidationIssue {
 export interface ValidationResult {
     validation_status: 'PASS' | 'FAIL';
     issues: ValidationIssue[];
-}
-
-export interface SRSIntakeModel {
-    introduction: IntroductionSection;
-    overallDescription: OverallDescriptionSection;
-    externalInterfaces: ExternalInterfaceSection;
-    systemFeatures: SystemFeaturesSection;
-    nonFunctional: NonFunctionalSection;
-    other: OtherSection;
 }

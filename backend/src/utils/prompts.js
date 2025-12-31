@@ -51,11 +51,13 @@ ${creativityInstruction}
 The "User Input" below may be a structured JSON object (from Layer 1 Intake).
 IF the input is JSON:
 1.  **TRUST THE CONTENT**: The input is already validated. Do not filter it. Use it as the ground truth for the respective sections.
-2.  **MAP EXACTLY**: 
-    - Input 'introduction.content' -> Distribute content into 'introduction.purpose', 'introduction.productScope', etc.
-    - Input 'overallDescription.content' -> Distribute content into 'productPerspective', 'userClasses', etc.
-    - Input 'systemFeatures' -> Output 'systemFeatures' (This remains structured)
-    - Input 'nonFunctional.content' -> Distribute into respective NFR categories.
+2.  **MAP AND DISTRIBUTE**: 
+    - Input 'details.fullDescription' is a monolithic text blob. **You must intelligently distribute this content** into the appropriate IEEE sections:
+      - Extract 'Purpose', 'Scope', 'Definitions' -> 'introduction'
+      - Extract 'User Classes', 'Constraints' -> 'overallDescription'
+      - Extract 'Features' -> 'systemFeatures' (Create distinct structured items)
+      - Extract 'NFRs' -> 'nonFunctionalRequirements'
+    - Input 'details.projectName' -> 'projectTitle' and 'introduction.projectName'
 3.  **GENERATE MISSING ARTIFACTS**: You MUST generate the following based on the context of the input:
     - 1.2 Document Conventions (Standard IEEE conventions)
     - 1.3 Intended Audience (Infer from User Classes)

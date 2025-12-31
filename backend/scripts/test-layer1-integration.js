@@ -1,36 +1,24 @@
 import { analyzeText } from '../src/services/aiService.js';
 
 async function testLayer1() {
-    console.log("--- TESTING LAYER 1 INTEGRATION (Structured Input) ---");
+    console.log("--- TESTING LAYER 1 INTEGRATION (Unified Monolithic Input) ---");
 
-    // New Structured Input (mimicking Intake)
+    // Unified Input (mimicking Single-Field Intake)
     const srsData = {
-        introduction: {
-            projectName: { content: "TodoMaster Pro" },
-            content: { content: "Purpose: A simple to-do list app for professionals.\nScope: Users can create, update, delete tasks. Includes a dark mode.\nDefinitions: Task - A unit of work." }
-        },
-        overallDescription: {
-            content: { content: "Product Perspective: Independent web application.\nUser Classes: End Users (manage tasks), Admins (manage system).\nConstraints: Must run on modern browsers." }
-        },
-        externalInterfaces: {
-            content: { content: "User Interfaces: Clean, minimalist UI with drag-and-drop.\nCommunication: HTTPS for all data transfer." }
-        },
-        systemFeatures: {
-            features: [
-                {
-                    id: "feat-1",
-                    name: "Task Management",
-                    description: { content: "Allow users to add, edit, and delete tasks." },
-                    functionalRequirements: { content: "The system shall allow users to create a new task." },
-                    stimulusResponse: { content: "Stimulus: Click 'Add Task'. Response: New task form appears." }
-                }
-            ]
-        },
-        nonFunctional: {
-            content: { content: "Performance: < 200ms response time.\nSecurity: Encrypted at rest." }
-        },
-        other: {
-            appendix: { content: "No appendix." }
+        details: {
+            projectName: { content: "OneField Pro" },
+            fullDescription: {
+                content: `
+                Purpose: This project is a unified dashboard for managing multiple social media accounts.
+                Scope: Users can post to Twitter and LinkedIn simultaneously.
+                Users: Marketing managers and social media influencers.
+                Features:
+                1. Post Scheduling: Schedule posts for future dates.
+                2. Analytics Dashboard: View engagement metrics.
+                Constraints: Must use official APIs.
+                Security: OAuth2 authentication required.
+                `
+            }
         }
     };
 
@@ -49,25 +37,24 @@ async function testLayer1() {
         }
 
         console.log("--- RESULT RECEIVED ---");
-        // Check for correct DISTRIBUTION of content
-        // e.g., did "Purpose" from Intro get mapped to result.introduction.purpose?
 
         const checks = {
             "Introduction Exists": !!result.introduction,
-            "Purpose Mapped": result.introduction?.purpose?.toLowerCase().includes("professional") || result.introduction?.purpose?.length > 10,
-            "Scope Mapped": result.introduction?.productScope?.toLowerCase().includes("delete tasks") || !!result.introduction?.productScope,
-            "Feature Preserved": result.systemFeatures?.[0]?.name === "Task Management",
-            "NFRs Mapped": !!result.nonFunctionalRequirements?.performanceRequirements
+            "Purpose Extracted": result.introduction?.purpose?.toLowerCase().includes("social media") || false,
+            "Features Extracted": (result.systemFeatures?.length || 0) >= 2,
+            "Specific Feature Found": result.systemFeatures?.some(f => f.name.includes("Scheduling")) || false,
+            "NFR Extracted": result.securityRequirements?.length > 0 || result.nonFunctionalRequirements?.securityRequirements?.length > 0
         };
 
         console.table(checks);
 
-        if (checks["Purpose Mapped"] && checks["Feature Preserved"]) {
-            console.log("Layer 1 Verification: PASSED");
+        if (checks["Purpose Extracted"] && checks["Specific Feature Found"]) {
+            console.log("Layer 1 Verification: PASSED - Monolithic input successfully unbundled.");
             process.exit(0);
         } else {
-            console.error("Layer 1 Verification: FAILED - Content mapping issue");
-            console.log("Received Intro Purpose:", result.introduction?.purpose);
+            console.error("Layer 1 Verification: FAILED - AI failed to distribute content.");
+            console.log("Full Result Intro:", result.introduction);
+            console.log("Full Result Features:", result.systemFeatures);
             process.exit(1);
         }
 

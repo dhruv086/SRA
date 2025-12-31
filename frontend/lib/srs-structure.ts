@@ -19,11 +19,10 @@ export interface SectionConfig {
 }
 
 export const SRS_STRUCTURE: SectionConfig[] = [
-    // 1. Introduction
     {
         id: '1',
-        key: 'introduction',
-        title: 'Introduction',
+        key: 'details',
+        title: 'Project Details',
         subsections: [
             {
                 id: '1.1',
@@ -37,91 +36,11 @@ export const SRS_STRUCTURE: SectionConfig[] = [
             },
             {
                 id: '1.2',
-                key: 'content',
-                title: 'Introduction Details',
-                description: 'Provide the Purpose, Scope, Definitions, References, and Overview of the project.',
-                placeholder: 'Describe the purpose, scope, and key terms...',
-                hints: ['Purpose & Scope', 'Definitions & Acronyms', 'References'],
-                isRequired: true,
-                inputType: 'textarea'
-            }
-        ]
-    },
-    {
-        id: '2',
-        key: 'overallDescription',
-        title: 'Overall Description',
-        subsections: [
-            {
-                id: '2.1',
-                key: 'content',
-                title: 'Full Description',
-                description: 'Describe the product perspective, functions, user classes, operating environment, and constraints.',
-                hints: ['Product Perspective', 'User Classes', 'Constraints', 'Dependencies'],
-                isRequired: true,
-                inputType: 'textarea'
-            }
-        ]
-    },
-    {
-        id: '3',
-        key: 'externalInterfaces',
-        title: 'External Interface Requirements',
-        subsections: [
-            {
-                id: '3.1',
-                key: 'content',
-                title: 'Interface Requirements',
-                description: 'Describe user, hardware, software, and communication interfaces.',
-                hints: ['GUI Layouts', 'API Integrations', 'Hardware Connections'],
-                isRequired: true,
-                inputType: 'textarea'
-            }
-        ]
-    },
-    {
-        id: '4',
-        key: 'systemFeatures',
-        title: 'System Features',
-        subsections: [
-            {
-                id: '4.1',
-                key: 'features',
-                title: 'Functional Requirements',
-                description: 'Define the functional requirements for each system feature.',
-                hints: ['Organize by feature', 'Input/Process/Output'],
-                isRequired: true,
-                inputType: 'dynamic-list' // Special handling for list of features
-            }
-        ]
-    },
-    {
-        id: '5',
-        key: 'nonFunctional',
-        title: 'Nonfunctional Requirements',
-        subsections: [
-            {
-                id: '5.1',
-                key: 'content',
-                title: 'Nonfunctional Requirements',
-                description: 'Specify performance, safety, security, quality attributes, and business rules.',
-                hints: ['Performance', 'Security', 'Reliability', 'Business Rules'],
-                isRequired: true,
-                inputType: 'textarea'
-            }
-        ]
-    },
-    {
-        id: '6',
-        key: 'other',
-        title: 'Other Requirements',
-        subsections: [
-            {
-                id: '6.1',
-                key: 'appendix',
-                title: 'Appendix',
-                description: 'Any other requirements or information.',
-                hints: ['Legal requirements', 'Temporary features'],
+                key: 'fullDescription',
+                title: 'Full Software Requirements',
+                description: 'Describe the entire project: Purpose, Scope, Features, User Types, and any Constraints. Write everything here.',
+                placeholder: 'Start describing your project in detail...',
+                hints: ['Describe Features', 'Identify Users', 'Set Constraints'],
                 isRequired: true,
                 inputType: 'textarea'
             }
@@ -144,24 +63,9 @@ export const createInitialIntakeState = (): SRSIntakeModel => {
     });
 
     return {
-        introduction: {
+        details: {
             projectName: field('1', '1.1', true),
-            content: field('1', '1.2', true)
-        },
-        overallDescription: {
-            content: field('2', '2.1', true)
-        },
-        externalInterfaces: {
-            content: field('3', '3.1', true)
-        },
-        systemFeatures: {
-            features: [] // Starts empty
-        },
-        nonFunctional: {
-            content: field('5', '5.1', true)
-        },
-        other: {
-            appendix: field('6', '6.1', true)
+            fullDescription: field('1', '1.2', true)
         }
     }
 }
