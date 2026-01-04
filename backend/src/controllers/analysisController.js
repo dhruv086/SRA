@@ -20,10 +20,10 @@ export const analyze = async (req, res, next) => {
             let projectName = "New Project";
 
             // Try to extract a meaningful name
-            if (srsData?.introduction?.projectName?.content) {
-                projectName = srsData.introduction.projectName.content.trim();
-            } else if (srsData?.introduction?.purpose?.content) {
-                projectName = srsData.introduction.purpose.content.split('\n')[0].slice(0, 50).trim();
+            if (srsData?.details?.projectName?.content) {
+                projectName = srsData.details.projectName.content.trim();
+            } else if (srsData?.details?.fullDescription?.content) {
+                projectName = srsData.details.fullDescription.content.split('\n')[0].slice(0, 50).trim();
             } else if (text) {
                 projectName = text.split('\n')[0].slice(0, 50).trim();
             }
@@ -56,7 +56,7 @@ export const analyze = async (req, res, next) => {
             }
         }
 
-        // LAYER 3 INTEGRATION: Structured Input Handling
+        // LAYER 3 INTEGRATION: Unified Input Handling
         if (srsData) {
             // LAYER 1: Draft / Validation Mode
             if (req.body.draft) {
@@ -92,7 +92,7 @@ export const analyze = async (req, res, next) => {
                                 softwareInterfaces: "",
                                 communicationsInterfaces: ""
                             },
-                            // Map remaining sections if needed for rough view, or keep empty for draft
+                            // Unified Input -> No systemFeatures yet (AI generates them)
                             systemFeatures: [],
                             nonFunctionalRequirements: {
                                 performanceRequirements: [],
@@ -105,7 +105,7 @@ export const analyze = async (req, res, next) => {
                             status: "DRAFT"
                         },
                         version: 1,
-                        title: (srsData.introduction?.projectName?.content || "Draft Analysis") + " (Draft)",
+                        title: (srsData.details?.projectName?.content || "Draft Analysis") + " (Draft)",
                         projectId: req.body.projectId,
                         metadata: {
                             trigger: 'initial',
@@ -131,9 +131,12 @@ export const analyze = async (req, res, next) => {
                 throw error;
             }
 
-            // 2. Convert Structured Data to "Text" for Pipeline Compatibility
-            // The Prompt (Layer 3) is now smart enough to detect JSON in this text.
-            text = JSON.stringify(srsData, null, 2);
+            // 2. Convert Unified Data to "Text" for Pipeline Compatibility
+            // The Prompt (Layer 3) now expects a raw description blob.
+            // We combine Project Name and Description for context.
+            const projectName = srsData.details?.projectName?.content || "Project";
+            const fullDesc = srsData.details?.fullDescription?.content || "";
+            text = `Project: ${projectName}\n\nDescription:\n${fullDesc}`;
         }
 
         if (!text || typeof text !== 'string') {

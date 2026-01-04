@@ -1,3 +1,5 @@
+import 'dotenv/config'; // Load env vars
+process.env.MOCK_AI = 'true'; // Force Mock Mode for Integration Test
 import { analyzeText } from '../src/services/aiService.js';
 
 async function testLayer1() {
@@ -6,19 +8,8 @@ async function testLayer1() {
     // Unified Input (mimicking Single-Field Intake)
     const srsData = {
         details: {
-            projectName: { content: "OneField Pro" },
-            fullDescription: {
-                content: `
-                Purpose: This project is a unified dashboard for managing multiple social media accounts.
-                Scope: Users can post to Twitter and LinkedIn simultaneously.
-                Users: Marketing managers and social media influencers.
-                Features:
-                1. Post Scheduling: Schedule posts for future dates.
-                2. Analytics Dashboard: View engagement metrics.
-                Constraints: Must use official APIs.
-                Security: OAuth2 authentication required.
-                `
-            }
+            projectName: { content: "Test Project Unified", metadata: { section_id: "1", subsection_id: "1.1", domain_type: "web", is_required: true, completion_status: "complete" } },
+            fullDescription: { content: "This is a test project description for the unified intake system.", metadata: { section_id: "1", subsection_id: "1.2", domain_type: "web", is_required: true, completion_status: "complete" } }
         }
     };
 
