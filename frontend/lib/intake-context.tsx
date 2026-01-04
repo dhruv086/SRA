@@ -38,7 +38,14 @@ export const IntakeProvider = ({ children }: { children: ReactNode }) => {
             try {
                 // Deep merge or specific parsing could be safer, but for now strict parse
                 const parsed = JSON.parse(savedData);
-                setData(parsed);
+                // Schema Migration Check: Ensure 'details' exists (Unified Intake)
+                if (parsed && parsed.details) {
+                    setData(parsed);
+                } else {
+                    console.warn("Legacy draft detected (missing details). Resetting to new schema.");
+                    // Optional: You could migrate old data here if needed, but for now reset.
+                    localStorage.removeItem('sra_intake_draft');
+                }
             } catch (e) {
                 console.error("Failed to load draft", e);
             }
