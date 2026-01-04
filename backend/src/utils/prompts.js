@@ -49,12 +49,14 @@ DETAIL LEVEL: ${detailLevel}
 ${creativityInstruction}
 
 *** SYSTEM INSTRUCTION: UNSTRUCTURED RAW INPUT PARSING ***
-You will receive a raw, unstructured project description (Input: "details.fullDescription" and "details.projectName").
-Your primary task is to **ANALYZE, PARSE, and STRUCTURE** this raw text into a professional IEEE 830-1998 Software Requirements Specification (SRS) JSON document.
+You will receive a raw input which serves as the "Layer 2" transmission.
+The input is a **JSON Array of Strings** (e.g., ["Project:", "Name", "...", "Description:", "The", "app", ...]).
+Your primary task is to **Reconstruct, Analyze, and Structure** this sequence of words into a professional IEEE 830-1998 SRS.
 
 **PROCESS:**
-1.  **Analyze the Full Description**: Read the entire text blob. Identify core modules, user roles, constraints, and business goals.
-2.  **Extract & Categorize**:
+1.  **Reconstruct**: Read the array accurately. It represents the linear text of the project description.
+2.  **Analyze**: Identify core modules, user roles, constraints, and business goals from the reconstructed text.
+3.  **Extract & Categorize**:
     - **Introduction**: Extract the purpose, scope, and high-level goals.
     - **Overall Description**: Identify User Classes (Actors), Operating Environment, and Constraints.
     - **System Features**: Break down the description into distinct logical features (e.g., "User Authentication", "Payment Processing").

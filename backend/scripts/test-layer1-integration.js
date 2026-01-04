@@ -1,4 +1,5 @@
 import 'dotenv/config'; // Load env vars
+console.log("DEBUG: Script started");
 process.env.MOCK_AI = 'true'; // Force Mock Mode for Integration Test
 import { analyzeText } from '../src/services/aiService.js';
 
@@ -13,7 +14,14 @@ async function testLayer1() {
         }
     };
 
-    const textInput = JSON.stringify(srsData, null, 2);
+    // Simulate Controller Logic (Layer 2 Tokenization)
+    const projectName = srsData.details.projectName.content;
+    const fullDesc = srsData.details.fullDescription.content;
+    const combinedText = `Project: ${projectName}\n\nDescription:\n${fullDesc}`;
+    const wordArray = combinedText.split(/\s+/).filter(word => word.length > 0);
+
+    // Payload to AI is the array directly
+    const textInput = JSON.stringify(wordArray);
 
     try {
         console.log("Sending Payload...");

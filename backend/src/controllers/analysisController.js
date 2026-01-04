@@ -132,11 +132,16 @@ export const analyze = async (req, res, next) => {
             }
 
             // 2. Convert Unified Data to "Text" for Pipeline Compatibility
-            // The Prompt (Layer 3) now expects a raw description blob.
-            // We combine Project Name and Description for context.
+            // LAYER 2: Tokenization - Encapsulate logic in an array of words
             const projectName = srsData.details?.projectName?.content || "Project";
             const fullDesc = srsData.details?.fullDescription?.content || "";
-            text = `Project: ${projectName}\n\nDescription:\n${fullDesc}`;
+
+            // Combine and Segregate into Word Array
+            const combinedText = `Project: ${projectName}\n\nDescription:\n${fullDesc}`;
+            // Regex to split by whitespace but keep the content clean
+            const wordArray = combinedText.split(/\s+/).filter(word => word.length > 0);
+
+            text = JSON.stringify(wordArray);
         }
 
         if (!text || typeof text !== 'string') {

@@ -144,7 +144,17 @@ export const getUserAnalyses = async (userId) => {
             let preview = a.inputText;
 
             // Optimized Preview Extraction
-            if (preview && preview.trim().startsWith('Project:')) {
+            if (preview && preview.trim().startsWith('[')) {
+                try {
+                    const words = JSON.parse(preview);
+                    if (Array.isArray(words)) {
+                        // Rejoin first 20 words for preview
+                        preview = words.slice(0, 20).join(' ') + "...";
+                    }
+                } catch (e) {
+                    // fall through
+                }
+            } else if (preview && preview.trim().startsWith('Project:')) {
                 // Format: "Project: X\n\nDescription:\nY"
                 const lines = preview.split('\n');
                 // Try to find the description part
